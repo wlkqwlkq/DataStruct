@@ -5,6 +5,7 @@ import User from '../views/User.vue'
 import Mall from '../views/Mall.vue'
 import PageOne from "@/views/PageOne.vue";
 import pageTwo from "@/views/PageTwo.vue";
+import Login from "@/views/Login.vue";
 
 Vue.use(VueRouter)
 
@@ -18,31 +19,21 @@ const routes = [
     name: 'home',
     component: Home
   },
-  {
-    path:'/user',
-    name:'user',
-    component: User
-  },
-  {
-    path:'/user',
-    name:'user',
-    component: User
-  },
+
   {
     path:'/mall',
     name:'mall',
     component: Mall
   },
   {
-    path:'/page1',
-    name:'pageOne',
-    component: PageOne
+    path:'/login',
+    name:'login',
+    component: Login
   },
   {
-    path:'/page2',
-    name:'pageTwo',
-    component: pageTwo
-  },
+    path: '*',
+    redirect: 'home'
+  }
 ]
 
 const router = new VueRouter({

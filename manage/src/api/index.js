@@ -11,7 +11,9 @@ export const getUserData = () => {
 export const addUser = (data)=> {
     return http.post('/user/addUser',data)
 }
-
+export const login = (data)=> {
+    return http.post('/login/doLogin',data)
+}
 export const User = {
     getUserData:() => {
         return http.get('/user/getData')

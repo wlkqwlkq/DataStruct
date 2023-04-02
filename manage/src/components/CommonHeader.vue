@@ -7,11 +7,11 @@
           </el-breadcrumb></span>
     </div>
     <div class="right">
-      <el-dropdown>
+      <el-dropdown @command="headerClike">
         <el-button circle class="pic"><img class="picture" src="../assets/images.jpg"></el-button>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>个人中心</el-dropdown-item>
-          <el-dropdown-item>推出</el-dropdown-item>
+          <el-dropdown-item command="logout">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -20,7 +20,7 @@
 
 <script>
 import {mapState} from "vuex";
-
+import Cookie from "js-cookie";
 export default {
   data(){
     return {
@@ -36,6 +36,12 @@ export default {
         return 0;
       this.$router.push(item.path)
       this.$store.commit('setActive',item.name)
+    },
+    headerClike(com){
+      if (com === 'logout'){
+        Cookie.remove('user')
+        this.$router.push('login')
+      }
     }
   },
   computed:{
@@ -47,7 +53,7 @@ export default {
     // }
   },
   mounted() {
-    console.log("mounted",this.tags)
+    // console.log("mounted",this.tags)
   }
 }
 </script>

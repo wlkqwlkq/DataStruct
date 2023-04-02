@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <el-container class="el-row">
+    <el-container class="el-row" >
 <!--      //侧边栏菜单-->
-      <el-aside width="auto" >
+      <el-aside width="auto" v-show="isShow">
         <common-aside/>
       </el-aside>
-      <el-container>
+      <el-container width="auto">
 <!--        //头部-->
-        <el-header><CommonHeader/> </el-header>
+        <el-header v-show="isShow"><CommonHeader/> </el-header>
 <!--        //主要内容区域-->
         <el-main>
 <!--          //面包屑-->
-          <el-button :ref="item.name" @click="clickMenu(item)" :path="item.path" type="primary" plain v-for="item in list" :class="['Breadcrumb','active',item.path]" >
+          <el-button v-show="isShow" :ref="item.name" @click="clickMenu(item)" :path="item.path" type="primary" plain v-for="item in list" :class="['Breadcrumb','active',item.path]" >
             {{item.label}}
             <i v-if="item.label!=='首页'" @click="clear(item.path)" class="el-icon-close"></i><!--            删除按钮-->
           </el-button>
@@ -26,11 +26,22 @@
 <script>
 import CommonAside from "@/components/CommonAside.vue";
 import CommonHeader from "@/components/CommonHeader.vue";
+import Cookie from "js-cookie";
 export default {
   name: "App",
   components: {
     CommonAside,
     CommonHeader
+  },
+  data(){
+    return {
+      isShow : true
+    }
+  },
+  created() {
+    if (Cookie.get('user') === 'admin'){
+      this.$store.commit('trendsRouter',this.$router)
+    }
   },
   methods:{
     clear(url){
@@ -69,7 +80,7 @@ export default {
           this.$router.replace(item.path)
         //左侧菜单联动高亮显示
         this.$store.commit('setActive',item.name)
-        console.log(this.$store.state.tab.isActive)
+        // console.log(this.$store.state.tab.isActive)
       }
     }
   },
@@ -86,7 +97,7 @@ export default {
   },
   watch:{
     path:function (newVal,oldVal){
-      console.log(newVal,oldVal)
+      // console.log(newVal,oldVal)
       let btn = document.querySelectorAll('.Breadcrumb');
       btn.forEach((key)=>{
         key.className = key.className.replace('active','')
@@ -94,17 +105,26 @@ export default {
           key.className+= ' active';
         }
       })
+      //如果没有登录，显示登录页
+      if (this.path === '/login'){
+        this.isShow = false
+      }else
+        this.isShow = true
     }
   },
   mounted() {
     //设置首页为当前活动窗口
     let bre = document.querySelectorAll('.Breadcrumb')
-    bre[0].className += 'active'
+    bre[0].className += ' active'
 
     //为所有面包屑按钮添加active属性，以解决 ”添加新的按钮时无活动窗口” 的问题
     bre.forEach(key =>{
       key.className = key.className.replace('active','')
     })
+    if (this.path === '/login'){
+      this.isShow = false
+    }else
+      this.isShow = true
   }
 }
 </script>

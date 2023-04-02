@@ -1,3 +1,7 @@
+import PageOne from "@/views/PageOne.vue";
+import pageTwo from "@/views/PageTwo.vue";
+import User from "@/views/User.vue";
+
 export default {
     state:{
         isCollapse:false, //控制菜单收起与展开
@@ -10,7 +14,76 @@ export default {
                 url:'Home/Home'
             }
         ],
-        Active:''//要高亮显示的path
+        Active:'',//要高亮显示的path
+        routerList:[
+            {
+                path:'/user',
+                name:'user',
+                component: User
+            },
+            {
+                path:'/page1',
+                name:'pageOne',
+                component: PageOne
+            },
+            {
+                path:'/page2',
+                name:'pageTwo',
+                component: pageTwo
+            }
+        ],
+        menu:[
+            {
+                path:'/home',
+                name:'home',
+                label:'首页',
+                icon:'s-home'
+            },
+            {
+                path:'/mall',
+                name:'mall',
+                label:'商品管理',
+                icon:'video-play'
+            },
+            {
+                path:'/user',
+                name:'user',
+                label:'用户管理',
+                icon:'user'
+            },
+            {
+                label:'其他',
+                icon:'location',
+                children:[
+                    {
+                        path:'/page1',
+                        name:'page1',
+                        label:'页面1',
+                        icon:'setting'
+                    },
+                    {
+                        path:'/page2',
+                        name:'page2',
+                        label:'页面2',
+                        icon:'setting'
+                    }
+                ]
+            }
+        ],
+        lowerMenu:[
+            {
+                path:'/home',
+                name:'home',
+                label:'首页',
+                icon:'s-home'
+            },
+            {
+                path:'/mall',
+                name:'mall',
+                label:'商品管理',
+                icon:'video-play'
+            }
+        ]
     },
     mutations:{
         //修改菜单展开收起的方法
@@ -28,6 +101,13 @@ export default {
         },
         setActive(state,val){
             state.Active = val //item.path
+        },
+        //动态设置路由
+        trendsRouter(state,Trouter){
+            // Trouter
+            state.routerList.forEach((keys)=>{
+                Trouter.addRoute(keys)
+            })
         }
     }
 }

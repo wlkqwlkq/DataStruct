@@ -47,6 +47,46 @@ let userList = [
         sex:'男',
         date:'2001-1-4',
         address:'浙江温州'
+    },
+    {
+        id:7,
+        name:'小红帽',
+        age:21,
+        sex:'女',
+        date:'2002-1-4',
+        address:'浙江温州'
+    },
+    {
+        id:8,
+        name:'大灰狼',
+        age:22,
+        sex:'男',
+        date:'2001-5-13',
+        address:'湖北荆州'
+    },
+    {
+        id:9,
+        name:'匹诺曹',
+        age:22,
+        sex:'男',
+        date:'2001-1-4',
+        address:'浙江温州'
+    },
+    {
+        id:10,
+        name:'小鲜肉',
+        age:22,
+        sex:'男',
+        date:'2001-1-4',
+        address:'浙江温州'
+    },
+    {
+        id:11,
+        name:'大张伟',
+        age:22,
+        sex:'男',
+        date:'2001-1-4',
+        address:'浙江温州'
     }
 ]
 export default {

@@ -42,34 +42,29 @@
       <!--      用户信息表格-->
       <el-table
           v-show="IsSearched"
-          :data="tableData"
+          :data="newTableData"
           stripe
           style="width: 100%">
 
         <el-table-column
             prop="name"
-            label="姓名"
-            width="180">
+            label="姓名">
         </el-table-column>
         <el-table-column
             prop="age"
-            label="年龄"
-            width="180">
+            label="年龄">
         </el-table-column>
         <el-table-column
             prop="sex"
-            label="性别"
-            width="180">
+            label="性别">
         </el-table-column>
         <el-table-column
             prop="date"
-            label="出生日期"
-            width="280">
+            label="出生日期">
         </el-table-column>
         <el-table-column
             prop="address"
-            label="地址"
-            width="300">
+            label="地址">
         </el-table-column>
         <el-table-column label="操作" width="500" prop="id"   >
           <template slot-scope="scope">
@@ -79,7 +74,21 @@
         </el-table-column>
       </el-table>
       <div v-show="!IsSearched" style="display: flex;margin-left: 28rem;margin-top: 5rem;">没有搜索到哦~O~</div>
+<!--      //分页-->
+      <div class="block">
+<!--        total:总数量，pageSize：每页显示数量，current-page：当前页码-->
+        <el-pagination
+            layout="prev, pager, next"
+            :total="total"
+            :page-size="pageSize"
+            hide-on-single-page
+            :current-page="currentPage"
+            @current-change="currentChange"
+            >
+        </el-pagination>
+      </div>
     </div>
+
 </template>
 
 <script>
@@ -100,6 +109,14 @@ export default {
       dialogVisible:false,
       //对话框标题
       titleFrom:'添加用户',
+      //当前页码
+      currentPage:1,
+      //每页显示数据的数量
+      pageSize:6,
+      //数据总数量
+      total:0,
+      //每页显示的数据
+      newTableData:[],
       //表格数据
       tableData:[
         {
@@ -148,6 +165,13 @@ export default {
     //获取用户列表数据
    getUserData().then(data =>{
       this.tableData = data.data
+      this.total = data.data.length
+     //分页显示
+     let end = this.pageSize;
+     for (let i=this.pageSize;i>0;i--){
+       if (this.tableData[end-i])
+          this.newTableData.push(this.tableData[end-i])
+     }
    })
   },
   methods:{
@@ -210,11 +234,28 @@ export default {
     },
     //删除用户信息
     deleteUser(id){
-      User.deleteUser(id).then(data =>{
-        getUserData().then(data =>{
-          this.tableData = data.data
+      this.$confirm('此操作将删除该用户, 是否继续?', '删除用户', {
+        confirmButtonText: '确定删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 删除用户信息
+        User.deleteUser(id).then(data =>{
+          getUserData().then(data =>{
+            this.tableData = data.data
+            this.pageData(this.currentPage)
+          })
         })
-      })
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     },
     //查找用户信息
     queryUser(){
@@ -235,6 +276,22 @@ export default {
         this.tableData = []
         this.tableData.push(data.data)
       })
+    },
+    //页码变化时调用
+    currentChange(page){
+      this.currentPage = page;
+      //每页显示 条数据
+      this.pageData(page)
+    },
+    //每页显示的数据
+    pageData(page){
+      this.newTableData = []
+      let end = page * this.pageSize;
+      console.log(end,'end')
+      for (let i=this.pageSize;i>0;i--){
+        if (this.tableData[end - i])
+          this.newTableData.push(this.tableData[end - i])
+      }
     }
   }
 }

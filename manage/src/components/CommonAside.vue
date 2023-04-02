@@ -47,50 +47,20 @@ h3{
 
 <script>
 import {nextTick} from "vue";
-
+import Cookie from "js-cookie";
 export default {
   data() {
     return {
-      menuData:[
-        {
-          path:'/home',
-          name:'home',
-          label:'首页',
-          icon:'s-home'
-        },
-        {
-          path:'/mall',
-          name:'mall',
-          label:'商品管理',
-          icon:'video-play'
-        },
-        {
-          path:'/user',
-          name:'user',
-          label:'用户管理',
-          icon:'user'
-        },
-        {
-          label:'其他',
-          icon:'location',
-          children:[
-            {
-              path:'/page1',
-              name:'page1',
-              label:'页面1',
-              icon:'setting'
-            },
-            {
-              path:'/page2',
-              name:'page2',
-              label:'页面2',
-              icon:'setting'
-            }
-          ]
-        }
-      ],
+      menuData:this.$store.state.tab.lowerMenu,
       active:this.isActiveBtn
     };
+  },
+  created() {
+    if (Cookie.get('user') === 'admin'){
+      this.menuData = this.$store.state.tab.menu
+    }else {
+      this.menuData = this.$store.state.tab.lowerMenu
+    }
   },
   methods: {
     handleOpen(key, keyPath) {
