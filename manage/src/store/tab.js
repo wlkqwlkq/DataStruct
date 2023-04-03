@@ -1,6 +1,7 @@
 import PageOne from "@/views/PageOne.vue";
 import pageTwo from "@/views/PageTwo.vue";
 import User from "@/views/User.vue";
+import {lower} from "mockjs/src/mock/random/helper";
 
 export default {
     state:{
@@ -45,6 +46,34 @@ export default {
                 label:'商品管理',
                 icon:'video-play'
             },
+        ],
+        lowerMenu:[
+            {
+                path:'/home',
+                name:'home',
+                label:'首页',
+                icon:'s-home'
+            },
+            {
+                path:'/mall',
+                name:'mall',
+                label:'商品管理',
+                icon:'video-play'
+            },
+        ],
+        seniorMenu:[
+            {
+                path:'/home',
+                name:'home',
+                label:'首页',
+                icon:'s-home'
+            },
+            {
+                path:'/mall',
+                name:'mall',
+                label:'商品管理',
+                icon:'video-play'
+            },
             {
                 path:'/user',
                 name:'user',
@@ -70,20 +99,7 @@ export default {
                 ]
             }
         ],
-        lowerMenu:[
-            {
-                path:'/home',
-                name:'home',
-                label:'首页',
-                icon:'s-home'
-            },
-            {
-                path:'/mall',
-                name:'mall',
-                label:'商品管理',
-                icon:'video-play'
-            }
-        ]
+        grade:'lower'
     },
     mutations:{
         //修改菜单展开收起的方法
@@ -108,6 +124,14 @@ export default {
             state.routerList.forEach((keys)=>{
                 Trouter.addRoute(keys)
             })
+        },
+        setMenu(state,grade){
+            if (grade === 'senior') {
+                state.menu = state.seniorMenu
+            }
+            else {
+                state.menu = state.lowerMenu
+            }
         }
     }
 }

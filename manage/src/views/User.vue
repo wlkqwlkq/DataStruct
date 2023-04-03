@@ -200,12 +200,12 @@ export default {
               //添加用户成功后 更新tableData数据，从而刷新表格
               getUserData().then(data =>{
                 this.tableData = data.data
-                console.log(this.tableData)
+                // console.log(this.tableData)
               })
             })
           }
           if (this.titleFrom === '修改用户信息'){
-            console.log('user',user)
+            // console.log('user',user)
             User.upUser(user).then(data =>{
               getUserData().then(data =>{
                 this.tableData = data.data
@@ -227,7 +227,6 @@ export default {
     },
     //修改用户信息
     upUser(data){
-      console.log(data)
       this.titleFrom = '修改用户信息'
       this.dialogVisible = true;
       this.formLabelAlign = data;
@@ -268,11 +267,8 @@ export default {
       }
       //查找数据
       User.queryUser(Uname).then(data =>{
-        this.IsSearched = !(data.data===null);
-        console.log("this.IsSearched:",this.IsSearched)
+        this.IsSearched = !(data.data === null);
         // console.log("查询到的数据",data.data)
-        console.log(this.tableData)
-        console.log(data.data)
         this.tableData = []
         this.tableData.push(data.data)
       })
@@ -287,7 +283,6 @@ export default {
     pageData(page){
       this.newTableData = []
       let end = page * this.pageSize;
-      console.log(end,'end')
       for (let i=this.pageSize;i>0;i--){
         if (this.tableData[end - i])
           this.newTableData.push(this.tableData[end - i])

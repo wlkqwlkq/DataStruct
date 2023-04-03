@@ -2,7 +2,7 @@
   <div>
     <el-form class="loginForm" :rules="rules" label-position="left"  label-width="65px" :inline="true" :model="loginForm">
       <el-form-item label="用户名" prop="userName">
-        <el-input v-model="loginForm.userName" placeholder="用户名" ></el-input>
+        <el-input v-model="loginForm.userName" placeholder="用户名"  ></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="loginForm.password" placeholder="密码" type="password"> </el-input>
@@ -45,13 +45,24 @@ export default {
         userName : this.loginForm.userName,
         password : this.loginForm.password
       }
-
       login(user).then((data)=>{
-        // console.log(data)
-        // this.isLogin = data.data
         if (data.data){
           Cookie.set('user',user.userName)
           this.$router.push('/home')
+          if (user.userName === 'admin') {
+            this.$store.commit('setMenu', 'senior')
+            Cookie.set('grade','senior')
+          }
+          else {
+            this.$store.commit('setMenu', 'lower')
+            Cookie.set('grade','lower')
+          }
+        }else {
+          this.$message({
+            showClose: true,
+            message: '用户名或者密码错误',
+            type: 'error',
+          });
         }
       })
     }
@@ -61,7 +72,7 @@ export default {
 
 <style scoped lang="less">
 .loginForm{
-  width: 420px;
+  width: 460px;
   border:1px solid #a4c0d0;
   box-shadow:10px 10px  10px #d8e4ef;
   border-radius: 10px;

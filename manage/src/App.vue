@@ -69,7 +69,7 @@ export default {
       let bre = []
       bre = document.querySelectorAll('.Breadcrumb')
       for (let i=0;i<bre.length;i++){
-        bre[i].className = 'el-button Breadcrumb el-button--primary is-plain'
+        bre[i].className = bre[i].className.replace('active','')
         if (bre[i].name === item.name){
           bre[i].className += 'active'
         }

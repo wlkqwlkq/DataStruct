@@ -1,30 +1,31 @@
 <template>
   <div>
     <header>
-      <el-button type="primary" round @click="dialogVisible = true;titleFrom = '添加用户'">+新增</el-button>
-      <!--          用户的信息表单-->
+      <el-button type="primary" round @click="dialogVisible = true;titleFrom = '添加商品'">+新增</el-button>
+      <!--          商品的信息表单--><!--          商品的信息表单-->
       <el-dialog
           :title="titleFrom"
           :visible.sync="dialogVisible"
           width="40%"
           :before-close="handleClose">
 
-        <el-form ref="form" :label-position="labelPosition" :rules="rules" label-width="80px" :model="formLabelAlign">
-          <el-form-item label="姓名" prop="name">
+        <el-form ref="form"  :rules="rules" label-width="80px" :model="formLabelAlign">
+          <el-form-item label="商品名" prop="name">
             <el-input v-model="formLabelAlign.name"></el-input>
           </el-form-item>
-          <el-form-item label="年龄" prop="age" >
-            <el-input v-model.number="formLabelAlign.age"></el-input>
+          <el-form-item label="价格" prop="price" >
+            <el-input v-model.number="formLabelAlign.price"></el-input>
           </el-form-item>
-          <el-form-item label="性别" prop="sex">
-            <el-radio v-model="formLabelAlign.sex" label="男">男</el-radio>
-            <el-radio v-model="formLabelAlign.sex" label="女">女</el-radio>
+          <el-form-item label="类别" prop="genre">
+            <el-radio v-model="formLabelAlign.genre" label="女装">女装</el-radio>
+            <el-radio v-model="formLabelAlign.genre" label="男装">男装</el-radio>
+            <el-radio v-model="formLabelAlign.genre" label="鞋包">鞋包</el-radio>
+            <el-radio v-model="formLabelAlign.genre" label="食品">食品</el-radio>
+            <el-radio v-model="formLabelAlign.genre" label="生活用品">生活用品</el-radio>
+            <el-radio v-model="formLabelAlign.genre" label="电子产品">电子产品</el-radio>
           </el-form-item>
-          <el-form-item label="出生日期" prop="date">
-            <el-date-picker type="date" placeholder="选择日期" v-model="formLabelAlign.date" style="width: 100%;"></el-date-picker>
-          </el-form-item>
-          <el-form-item label="地址" prop="address">
-            <el-input v-model="formLabelAlign.address"></el-input>
+          <el-form-item label="库存" prop="stock">
+            <el-input v-model.number="formLabelAlign.stock"></el-input>
           </el-form-item>
         </el-form>
 
@@ -34,12 +35,12 @@
           </span>
       </el-dialog>
       <div>
-        <input type="text" v-model="input" name="query" ref="query" placeholder="请输入关键字"><el-button type="primary" round @click="queryUser">搜索</el-button>
+        <input type="text" v-model="input" name="query" ref="query" placeholder="请输入关键字"><el-button type="primary" round @click="queryMall">搜索</el-button>
       </div>
     </header>
 
 
-    <!--      用户信息表格-->
+    <!--     商品信息表格-->
     <el-table
         v-show="IsSearched"
         :data="newTableData"
@@ -48,28 +49,28 @@
 
       <el-table-column
           prop="name"
-          label="姓名">
+          label="商品名">
       </el-table-column>
       <el-table-column
-          prop="age"
-          label="年龄">
+          prop="price"
+          label="价格">
       </el-table-column>
       <el-table-column
-          prop="sex"
-          label="性别">
+          prop="genre"
+          label="类别">
       </el-table-column>
       <el-table-column
-          prop="date"
-          label="出生日期">
+          prop="stock"
+          label="库存">
       </el-table-column>
       <el-table-column
-          prop="address"
-          label="地址">
+          prop="sales"
+          label="销量">
       </el-table-column>
       <el-table-column label="操作" width="500" prop="id"   >
         <template slot-scope="scope">
-          <el-button type="warning" round @click="upUser(scope.row)">编辑</el-button>
-          <el-button type="danger" round @click="deleteUser(scope.row.id)">删除</el-button>
+          <el-button type="warning" round @click="upMall(scope.row)">编辑</el-button>
+          <el-button type="danger" round @click="deleteMall(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -93,9 +94,7 @@
 
 <script>
 import axios from "axios";
-import {getUserData} from "@/api/index";
-import {addUser} from "@/api/index";
-import {User} from "@/api/index";
+import { Mall } from "@/api/index";
 
 export default {
   name: "Mall",
@@ -108,7 +107,7 @@ export default {
       //对话框是否显示
       dialogVisible:false,
       //对话框标题
-      titleFrom:'添加用户',
+      titleFrom:'添加商品',
       //当前页码
       currentPage:1,
       //每页显示数据的数量
@@ -120,50 +119,47 @@ export default {
       //表格数据
       tableData:[
         {
-          name:'张三',
-          age:18,
-          sex:'男',
-          date:'2013-1-2',
-          address:'广东佛山'
+          name:'',//商品名字
+          price:0,//价格
+          genre:'',//类别
+          stock:0,//库存
+          sales:0//销量
         }
       ],
       //表单对齐方式
       labelPosition: 'left',
       //表单数据
       formLabelAlign: {
-        id:'',
-        name: '',
-        age: '',
-        sex: '男',
-        date:'2001-1-1',
-        address:''
+        id:'',//商品编号
+        name:'',//商品名字
+        price:0,//价格
+        genre:'',//类别
+        stock:0,//库存
+        sales:0//销量
       },
       //表单规则
       rules:{
         name: [
-          { required: true, message: '请输入姓名', trigger: 'blur' },
-          { min: 2, max: 10, message: '长度在 2 到 10个字符', trigger: 'blur' }
+          { required: true, message: '请输入商品名称', trigger: 'blur' },
+          { min: 2, max: 10, message: '长度在 2 到 15个字符', trigger: 'blur' }
         ],
-        age: [
-          { required: true, message: '请输入年龄', trigger: 'blur' },
-          { min: 0, max: 200, message: '年龄应在0~200之间', type:'number'}
+        price: [
+          { required: true, message: '请输入价格', trigger: 'blur' },
+          { min: 0, max: 9999999, message: '价格应在0~9999999之间', type:'number'}
         ],
-        sex: [
-          { required: true, trigger: 'blur' },
+        genre: [
+          { required: true,message:'请选择类别'},
         ],
-        date: [
-          { required: true, trigger: 'blur' },
-        ],
-        address: [
-          { required: true, message: '请输入地址', trigger: 'blur' },
-          { min: 2, max: 18, message: '长度在 2 到 18个字符', trigger: 'blur' }
-        ],
+        stock: [
+          { required: true, message: '请输入库存量', trigger: 'blur' },
+          { min: 0, max: 9999, message: '库存量应在0~9999之间', type:'number'}
+        ]
       }
     }
   },
   created() {
-    //获取用户列表数据
-    getUserData().then(data =>{
+    //获取商品列表数据
+    Mall.getMallData().then(data =>{
       this.tableData = data.data
       this.total = data.data.length
       //分页显示
@@ -179,35 +175,39 @@ export default {
     handleClose(done) {
       this.$confirm('确认关闭？')
           .then(_ => {
-            this.resetFields()
-            this.dialogVisible = false;
             done();
           })
           .catch(_ => {});
     },
 
-    //提交添加/修改用户表单
+    //提交添加/修改商品表单
     submit(){
       this.$refs.form.validate((valid)=>{
         //检查表单验证是否通过
         if (valid){
-          //将表单数据存入user变量
-          let user = this.formLabelAlign;
-          //发”添加用户“请求
-          if(this.titleFrom === '添加用户'){
-            addUser(user).then( data =>{
+          //将表单数据存入mall变量
+          let mall = this.formLabelAlign;
+          //发”添加商品“请求
+          if(this.titleFrom === '添加商品'){
+            Mall.addMall(mall).then( data =>{
               // console.log(data)
-              //添加用户成功后 更新tableData数据，从而刷新表格
-              getUserData().then(data =>{
+              //添加商品成功后 更新tableData数据，从而刷新表格
+              Mall.getMallData().then(data =>{
                 this.tableData = data.data
-                console.log(this.tableData)
+                this.total = data.data.length
+                //分页显示
+                let end = this.currentPage*this.pageSize;
+                this.newTableData = []
+                for (let i=this.pageSize;i>0;i--){
+                  if (this.tableData[end-i])
+                    this.newTableData.push(this.tableData[end-i])
+                }
               })
             })
           }
-          if (this.titleFrom === '修改用户信息'){
-            console.log('user',user)
-            User.upUser(user).then(data =>{
-              getUserData().then(data =>{
+          if (this.titleFrom === '修改商品信息'){
+            Mall.upMall(Mall).then(data =>{
+              Mall.getMallData().then(data =>{
                 this.tableData = data.data
               })
             })
@@ -216,32 +216,33 @@ export default {
           //关闭弹窗
           this.dialogVisible = false
           this.formLabelAlign = {
-            name: '',
-            age: '',
-            sex: '男',
-            date:'2001-1-1',
-            address:''
+            id:'',//商品编号
+            name:'',//商品名字
+            price:0,//价格
+            genre:'',//类别
+            stock:0,//库存
+            sales:0//销量
           }
         }
       })
     },
-    //修改用户信息
-    upUser(data){
+    //修改商品信息
+    upMall(data){
       console.log(data)
-      this.titleFrom = '修改用户信息'
+      this.titleFrom = '修改商品信息'
       this.dialogVisible = true;
       this.formLabelAlign = data;
     },
-    //删除用户信息
-    deleteUser(id){
-      this.$confirm('此操作将删除该用户, 是否继续?', '删除用户', {
+    //删除商品信息
+    deleteMall(id){
+      this.$confirm('此操作将删除该商品, 是否继续?', '删除商品', {
         confirmButtonText: '确定删除',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        // 删除用户信息
-        User.deleteUser(id).then(data =>{
-          getUserData().then(data =>{
+        // 删除商品信息
+        Mall.deleteMall(id).then(data =>{
+          Mall.getMallData().then(data =>{
             this.tableData = data.data
             this.pageData(this.currentPage)
           })
@@ -257,24 +258,36 @@ export default {
         });
       });
     },
-    //查找用户信息
-    queryUser(){
-      let Uname = this.input;
+    //查找商品信息
+    queryMall(){
+      let name = this.input;
       //如果输入的字符串为空，则返回全部数据
-      if (!Uname){
-        return getUserData().then(data =>{
+      if (!name){
+        this.IsSearched = true;
+        return Mall.getMallData().then(data =>{
           this.tableData = data.data
+          this.total = data.data.length
+          //分页显示
+          let end = this.pageSize;
+          this.newTableData = []
+          for (let i=this.pageSize;i>0;i--){
+            if (this.tableData[end-i])
+              this.newTableData.push(this.tableData[end-i])
+          }
         })
       }
       //查找数据
-      User.queryUser(Uname).then(data =>{
+      Mall.queryMall(name).then(data =>{
         this.IsSearched = !(data.data===null);
-        console.log("this.IsSearched:",this.IsSearched)
-        // console.log("查询到的数据",data.data)
-        console.log(this.tableData)
-        console.log(data.data)
-        this.tableData = []
-        this.tableData.push(data.data)
+        console.log("查询到的数据",data.data)
+        let list = data.data;
+        this.total = list.length
+        let end = this.pageSize;
+        this.newTableData = []
+        for (let i=this.pageSize;i>0;i--){
+          if (list[end-i])
+            this.newTableData.push(list[end-i])
+        }
       })
     },
     //页码变化时调用
@@ -287,7 +300,6 @@ export default {
     pageData(page){
       this.newTableData = []
       let end = page * this.pageSize;
-      console.log(end,'end')
       for (let i=this.pageSize;i>0;i--){
         if (this.tableData[end - i])
           this.newTableData.push(this.tableData[end - i])

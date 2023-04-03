@@ -51,16 +51,10 @@ import Cookie from "js-cookie";
 export default {
   data() {
     return {
-      menuData:this.$store.state.tab.lowerMenu,
       active:this.isActiveBtn
     };
   },
   created() {
-    if (Cookie.get('user') === 'admin'){
-      this.menuData = this.$store.state.tab.menu
-    }else {
-      this.menuData = this.$store.state.tab.lowerMenu
-    }
   },
   methods: {
     handleOpen(key, keyPath) {
@@ -97,6 +91,9 @@ export default {
       if (!active)
         return '/home'
       return active;
+    },
+    menuData(){
+     return this.$store.state.tab.menu
     }
   },
   watch:{
@@ -115,7 +112,5 @@ export default {
       }
     }
   },
-  mounted() {
-  }
 }
 </script>

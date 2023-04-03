@@ -70,6 +70,7 @@
 <script>
 import {getData} from "@/api";
 import * as echarts from 'echarts';
+import Cookie from "js-cookie";
 export default {
   name: "Home",
   data(){
@@ -143,8 +144,11 @@ export default {
       ]
     }
   },
-  computed:{
-
+  created() {
+    if (Cookie.get('grade') === 'senior')
+      this.$store.commit('setMenu','senior')
+    else
+      this.$store.commit('setMenu','lower')
   },
   mounted() {
     //调用api接口获取后端数据
@@ -254,8 +258,12 @@ export default {
       // console.log(option3.series)
     })
 
-
+    if (Cookie.get('grade') === 'senior')
+      this.$store.commit('setMenu','senior')
+    else
+      this.$store.commit('setMenu','lower')
   },
+
 }
 </script>
 

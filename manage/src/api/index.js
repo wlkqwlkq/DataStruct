@@ -31,3 +31,20 @@ export const User = {
         return http.post('/user/queryUser',name)
     }
 }
+export const Mall = {
+    getMallData:() => {
+        return http.get('/mall/getMallData')
+    },
+    addMall: (data)=> {
+        return http.post('/mall/addMall',data)
+    },
+    upMall: (data)=> {
+        return http.post('/mall/upMall',data)
+    },
+    deleteMall: (id)=> {
+        return http.post('/mall/deleteMall',id)
+    },
+    queryMall: (name)=> {
+        return http.post('/mall/queryMall',name)
+    }
+}
